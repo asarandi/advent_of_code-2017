@@ -3,11 +3,11 @@ package main
 
 import (
 	"fmt"
-	_"log"
-	"strings"
-	"strconv"
 	"io/ioutil"
+	_ "log"
 	"regexp"
+	"strconv"
+	"strings"
 )
 
 var childParent map[string]string
@@ -18,7 +18,7 @@ var root string
 func sum(p string) int {
 	res := nodeWeight[p]
 	k := len(parentChildren[p])
-	for i:=0; i<k; i++ {
+	for i := 0; i < k; i++ {
 		c := parentChildren[p][i]
 		res += sum(c)
 	}
@@ -29,7 +29,7 @@ func prnt(p string) {
 	ps := sum(p)
 	fmt.Printf("p[%8s] w[%5d] ", p, ps)
 	k := len(parentChildren[p])
-	for i:=0; i<k; i++ {
+	for i := 0; i < k; i++ {
 		c := parentChildren[p][i]
 		cs := sum(c)
 		fmt.Printf("c[%8s] w[%5d] ", c, cs)
@@ -40,7 +40,7 @@ func prnt(p string) {
 func balanced(p string) bool {
 	k := len(parentChildren[p])
 	res := true
-	for i:=0; i+1<k; i++ {
+	for i := 0; i+1 < k; i++ {
 		a := parentChildren[p][i]
 		b := parentChildren[p][i+1]
 		if sum(a) != sum(b) {
@@ -59,10 +59,14 @@ func balanced(p string) bool {
 
 func main() {
 	content, err := ioutil.ReadFile("input.txt")
-	if err != nil { panic(err) }
+	if err != nil {
+		panic(err)
+	}
 	split1 := strings.Split(strings.Trim(string(content), " \t\r\n\v\f"), "\n")
 	re := regexp.MustCompile("(\\S+)\\s+\\((\\d+)\\)\\s?\\-?\\>?\\s?(.*)?")
-	if err != nil { panic(err) }
+	if err != nil {
+		panic(err)
+	}
 	childParent = make(map[string]string)
 	parentChildren = make(map[string][]string)
 	nodeWeight = make(map[string]int)
@@ -74,7 +78,7 @@ func main() {
 		if len(rss[3]) > 0 {
 			_, ok := parentChildren[p]
 			if !ok {
-				parentChildren[p] = make([]string,0)
+				parentChildren[p] = make([]string, 0)
 			}
 			split2 := strings.Split(rss[3], ", ")
 			for _, child := range split2 {
@@ -83,7 +87,7 @@ func main() {
 			}
 		}
 	}
-	for _,v := range childParent {
+	for _, v := range childParent {
 		_, ok := childParent[v]
 		if !ok {
 			root = v
@@ -93,5 +97,5 @@ func main() {
 	}
 	prnt("tulwp")
 	fmt.Println(nodeWeight["tulwp"])
-//	balanced(root)
+	//	balanced(root)
 }

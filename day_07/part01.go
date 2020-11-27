@@ -3,19 +3,23 @@ package main
 
 import (
 	"fmt"
-	_"log"
-	"strings"
-	_"strconv"
 	"io/ioutil"
+	_ "log"
 	"regexp"
+	_ "strconv"
+	"strings"
 )
 
 func main() {
 	content, err := ioutil.ReadFile("input.txt")
-	if err != nil { panic(err) }
+	if err != nil {
+		panic(err)
+	}
 	split1 := strings.Split(strings.Trim(string(content), " \t\r\n\v\f"), "\n")
 	re := regexp.MustCompile("(\\S+)\\s+\\((\\d+)\\)\\s?\\-?\\>?\\s?(.*)?")
-	if err != nil { panic(err) }
+	if err != nil {
+		panic(err)
+	}
 	childParent := make(map[string]string)
 	for _, line := range split1 {
 		rss := re.FindStringSubmatch(line)
@@ -26,7 +30,7 @@ func main() {
 			}
 		}
 	}
-	for _,v := range childParent {
+	for _, v := range childParent {
 		_, ok := childParent[v]
 		if !ok {
 			fmt.Println("part 1:", v)
