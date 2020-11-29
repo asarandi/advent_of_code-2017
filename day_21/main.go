@@ -79,7 +79,26 @@ func permuteThrees() {
 	}
 }
 
-func transfer(b, a int, pattern map[uint]uint) [][]uint {
+func sliceToUint(y, x, n int, s [][]uint) (out uint) {
+	for i := 0; i < n; i++ {
+		for j := 0; j < n; j++ {
+			out <<= 1
+			out |= s[y*n+i][x*n+j]
+		}
+	}
+	return
+}
+
+func uintToSlice(y, x, n int, u uint, s [][]uint) {
+	for i := 0; i < n; i++ {
+		for j := 0; j < n; j++ {
+			bit := (u >> ((n*n - 1) - (i*n + j))) & 1
+			s[y*n+i][x*n+j] = bit
+		}
+	}
+}
+
+func redraw(b, a int, pattern map[uint]uint) [][]uint {
 	n := len(square) / b
 	res := make([][]uint, n*a)
 	for y := 0; y < n*a; y++ {
@@ -87,36 +106,23 @@ func transfer(b, a int, pattern map[uint]uint) [][]uint {
 	}
 	for y := 0; y < n; y++ {
 		for x := 0; x < n; x++ {
-			from := uint(0)
-			for i := 0; i < b; i++ {
-				for j := 0; j < b; j++ {
-					from <<= 1
-					from |= square[y*b+i][x*b+j]
-				}
-			}
+			from := sliceToUint(y, x, b, square)
 			to, ok := pattern[from]
 			if !ok {
 				panic("not found")
 			}
-			for i := 0; i < a; i++ {
-				for j := 0; j < a; j++ {
-					bit := (to >> ((a*a - 1) - (i*a + j))) & 1
-					res[y*a+i][x*a+j] = bit
-				}
-			}
+			uintToSlice(y, x, a, to, res)
 		}
 	}
 	return res
 }
 
 func tick() {
-	var newSquare [][]uint
 	if len(square)%2 == 0 {
-		newSquare = transfer(2, 3, two2three)
+		square = redraw(2, 3, two2three)
 	} else {
-		newSquare = transfer(3, 4, three2four)
+		square = redraw(3, 4, three2four)
 	}
-	square = newSquare
 }
 
 func count() (res uint) {
